@@ -1,16 +1,17 @@
 import { data } from "./data.js";
 let timer = document.getElementById("timer")
 
-let time = 0
+
 let enemyLeft = 110
-let weaponLeft = 10
+let weaponLeft = 8
 let weapon = document.getElementById("weapon")
 let word = ""
+let time = 0
 let hero = document.getElementsByClassName("hero")[0]
 let h = false
 let speed = 0.02
 let wn = 0
-let health = document.getElementById("health")
+let best = document.getElementById("best")
 let hearts = 3
 let enWord = null
 let ruWord = null
@@ -109,27 +110,34 @@ setTimeout(function () {
 
 
 function step(timestamp) {
+    if (isRunning == true) {
+        enemyLeft = enemyLeft - speed
+        enemy.style.left = enemyLeft + '%'
+        if (h == true) {
+            weapon.style.display = "inline-block"
+            weaponLeft = weaponLeft + 0.5
+            weapon.style.left = weaponLeft + "%"
+        }
+        if (weaponLeft > enemyLeft) {
+            weaponLeft = 8
+            h = false
+            enemyLeft = 100
 
-    enemyLeft = enemyLeft - speed
-    enemy.style.left = enemyLeft + '%'
-    if (h == true) {
-        weapon.style.display = "inline-block"
-        weaponLeft = weaponLeft + 0.5
-        weapon.style.left = weaponLeft + "%"
+
+
+        }
+        if (enemyLeft < 11) {
+            best.innerHTML = "твой рекорд:"+ time + "секунд(a)"
+            clearInterval(timerInterval)
+            timer.innerHTML = "ЛОХ!!!"
+            isRunning = false
+
+        }
+        if (h == false) {
+            weapon.style.left = weaponLeft + "%"
+            weapon.style.display = "none"
+        }
     }
-    if (weaponLeft > enemyLeft) {
-        weaponLeft = 10
-        h = false
-        enemyLeft = 100
-
-
-
-    }
-    if (h == false) {
-        weapon.style.left = weaponLeft + "%"
-        weapon.style.display = "none"
-    }
-
     //   const shift = Math.min(0.1 * elapsed, 200);
     //   element.style.trans = `translateX(${shift}px)`;
     //   if (shift < 200) {
@@ -161,7 +169,7 @@ pause.onclick = function () {
 startBtn.onclick = function () {
     startBtn.innerHTML = "начать заново 🔄"
     enemyLeft = 100
-    pause.style.opacity  ="1"
+    pause.style.opacity = "1"
     refreshWords()
     time = 0
     isRunning = true;

@@ -75,7 +75,7 @@ img {
     position: absolute;
     
     top: 65%;
-    left: 10%;
+    left: 8%;
     padding: 10px 20px;
     margin: 0;
     
@@ -106,7 +106,7 @@ border: 15px solid;
     overflow: hidden;
     position: relative;
 }
-/* текст выходит за кнопку */
+
 #pause{
     opacity: 0;
 }
