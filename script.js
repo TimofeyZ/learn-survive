@@ -1,7 +1,8 @@
 import { data } from "./data.js";
+import getMath from "./getMath.js";
+let nabordannux = data
 let timer = document.getElementById("timer")
-
-
+let words = document.getElementById("words")
 let enemyLeft = 110
 let weaponLeft = 8
 let weapon = document.getElementById("weapon")
@@ -9,13 +10,17 @@ let word = ""
 let time = 0
 let hero = document.getElementsByClassName("hero")[0]
 let h = false
-let speed = 0.02
+let speed = 0.05
 let wn = 0
+let highScore = localStorage.getItem("highScore") || 0
+
 let best = document.getElementById("best")
 let hearts = 3
 let enWord = null
 let ruWord = null
 let enWordBtn = null
+let modeBtn = document.getElementById("modeBtn")
+let isMathMode = false
 let ruWordBtn = null
 let isRunning = false;
 const emojis = [
@@ -34,14 +39,16 @@ let startBtn = document.getElementById("startBtn")
 let enemy = document.getElementsByClassName("enemy")[0]
 let checkArr = []
 let wordsBtns = document.getElementById("words").getElementsByTagName("button")
+getMath()
 
-
-let fourObj = data.slice(0, 4)
+let fourObj = nabordannux.slice(0, 4)
 let eng = []
 let rus = []
 let left = document.getElementById('left')
 let right = document.getElementById("right")
 refreshWords()
+best.innerHTML = "твой рекорд: " + highScore + " секунд(a)"
+words.style.pointerEvents = "none"
 for (let i = 0; i < wordsBtns.length; i++) {
     let btn = wordsBtns[i]
     btn.onclick = function () {
@@ -61,7 +68,8 @@ for (let i = 0; i < wordsBtns.length; i++) {
             ruWordBtn = btn
         }
         if (enWord && ruWord) {
-            let wordObj = data.filter(function (obj) {
+
+            let wordObj = nabordannux.filter(function (obj) {
                 emoji = Math.floor(Math.random() * weapons.length)
                 weapon.innerHTML = weapons[emoji]
 
@@ -70,8 +78,8 @@ for (let i = 0; i < wordsBtns.length; i++) {
             })[0]
             if (wordObj.ru == ruWord) {
                 console.log("TRUE");
-                enWordBtn.style.border = "5px solid  rgba(110, 211, 101, 0.97)"
-                ruWordBtn.style.border = "5px solid  rgba(110, 211, 101, 0.97)"
+                enWordBtn.style.border = "6px solid  rgba(61, 214, 47, 0.97)"
+                ruWordBtn.style.border = "6px solid  rgba(61, 214, 47, 0.97)"
                 document.getElementsByClassName("gray")[0].className = ""
                 h = true
                 enWordBtn.disabled = true
@@ -87,13 +95,18 @@ for (let i = 0; i < wordsBtns.length; i++) {
             }
             if (wn == 4) {
                 console.log("wn4");
-                refreshWords()
-
+                if (isMathMode) {
+                    refresMath()
+                } else {
+                    refreshWords()
+                }
                 wn = 0
 
             }
             ruWord = null
             enWord = null
+
+
         }
 
 
@@ -127,7 +140,13 @@ function step(timestamp) {
 
         }
         if (enemyLeft < 11) {
-            best.innerHTML = "твой рекорд:"+ time + "секунд(a)"
+
+            if (highScore < time.toFixed(1)) {
+                highScore = time.toFixed(1)
+                best.innerHTML = "твой рекорд: " + highScore + " секунд(a)"
+                localStorage.setItem('highScore', highScore)
+            }
+
             clearInterval(timerInterval)
             timer.innerHTML = "ЛОХ!!!"
             isRunning = false
@@ -158,19 +177,48 @@ console.log(eng, rus);
 console.log(eng, rus);
 let timerInterval = null;
 
+
 pause.onclick = function () {
+    if (isRunning) {
 
-    clearInterval(timerInterval);
-    timerInterval = null;
-    isRunning = false;
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isRunning = false;
+        pause.innerHTML = "продолжить ▶️";
+        words.style.pointerEvents = "none"
+        pause.style.opacity = "1";
+    } else {
 
+        if (timer.innerHTML !== "ЛОХ!!!") {
+            isRunning = true;
+            timerInterval = setInterval(function () {
+                time = time + 0.1;
+                speed = speed + 0.0001
+                timer.innerHTML = time.toFixed(1);
+            }, 100);
+            pause.innerHTML = "пауза ⏸️";
+            words.style.pointerEvents = "auto"
+        }
+    }
 }
 
 startBtn.onclick = function () {
+    speed = 0.05
     startBtn.innerHTML = "начать заново 🔄"
+    words.style.pointerEvents = "auto"
+    speed = 0.05
     enemyLeft = 100
+    let heroNumber = Math.floor(Math.random() * emojis.length)
+    hero.innerHTML = emojis[heroNumber]
     pause.style.opacity = "1"
-    refreshWords()
+    pause.innerHTML = "пауза ⏸️"
+
+    if (isMathMode) {
+        refresMath()
+    } else {
+        refreshWords()
+    }
+
     time = 0
     isRunning = true;
     clearInterval(timerInterval)
@@ -178,36 +226,47 @@ startBtn.onclick = function () {
         time = time + 0.1;
         timer.innerHTML = time.toFixed(1);
     }, 100);
-
 }
-// setTimeout(function () {
-//     enemy.style.display = 
-
-// }, 1000000)
 
 
 
-function refreshWords() {
-
-    data.sort(function () {
+function refreshGame() {
+    words.style.pointerEvents = "auto"
+    
+    
+    if (isMathMode) {
+        nabordannux = getMath()
+    } else {
+        nabordannux = data  
+    }
+    
+   
+    nabordannux.sort(function () {
         return Math.random() > 0.5 ? 1 : -1
     })
-    console.log("2");
-
-    fourObj = data.slice(0, 4)
-    console.log(fourObj);
+    
+ 
+    fourObj = nabordannux.slice(0, 4)
+    
+ 
     eng = []
     rus = []
     for (let i = 0; i < 4; i++) {
-
         eng.push(fourObj[i].en)
-        rus.push(fourObj[i].ru)
-
+       
+        if (isMathMode) {
+            rus.push((fourObj[i].ru))
+        } else {
+            rus.push(fourObj[i].ru)
+        }
     }
+    
+ 
     rus.sort(function () {
         return Math.random() > 0.5 ? 1 : -1
-
     })
+    
+   
     for (let i = 0; i < 4; i++) {
         let lBtn = left.children[i]
         let rBtn = right.children[i]
@@ -215,9 +274,45 @@ function refreshWords() {
         rBtn.innerHTML = rus[i]
         lBtn.disabled = false
         rBtn.disabled = false
-        lBtn.style.border = "0px solid  rgba(110, 211, 101, 0.97)"
-        rBtn.style.border = "0px solid  rgba(110, 211, 101, 0.97)"
-        console.log(lBtn);
+        lBtn.style.border = "6px solid rgba(110, 211, 101, 0)"
+        rBtn.style.border = "6px solid rgba(110, 211, 101, 0)"
+    }
+}
+
+
+function refreshWords() {
+    refreshGame()
+}
+
+function refresMath() {
+    refreshGame()
+}
+
+
+modeBtn.onclick = function () {
+    if (isRunning) {
+        return
     }
 
+    isMathMode = !isMathMode
+
+    if (isMathMode) {
+        modeBtn.innerHTML = "📚 английский"
+    } else {
+        modeBtn.innerHTML = "🔢 математика"
+    }
+    
+    refreshGame()  
+
+    enWord = null
+    ruWord = null
+    enWordBtn = null
+    ruWordBtn = null
+    wn = 0
+    
+   
+    let grayBtn = document.getElementsByClassName("gray")[0]
+    if (grayBtn) {
+        grayBtn.classList.remove("gray")
+    }
 }

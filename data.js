@@ -98,7 +98,6 @@ export let data = [
     { en: "internet", ru: "интернет" },
     { en: "website", ru: "веб-сайт" },
     { en: "password", ru: "пароль" },
-    { en: "email", ru: "электронная почта" },
     { en: "file", ru: "файл" },
     { en: "data", ru: "данные" },
     { en: "app", ru: "приложение" },
@@ -119,9 +118,7 @@ export let data = [
     { en: "swim", ru: "плавать" },
     { en: "run", ru: "бегать" },
     { en: "jump", ru: "прыгать" },
-    { en: "cycle", ru: "ездить на велосипеде" },
     { en: "win", ru: "побеждать" },
     { en: "lose", ru: "проигрывать" },
     { en: "score", ru: "счёт" }
 ];
-/* текст выходит за кнопку  */
