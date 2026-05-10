@@ -13,7 +13,7 @@ let h = false
 let speed = 0.05
 let wn = 0
 let highScore = localStorage.getItem("highScore") || 0
-
+let body = document.getElementById("body")
 let best = document.getElementById("best")
 let hearts = 3
 let enWord = null
@@ -68,6 +68,7 @@ for (let i = 0; i < wordsBtns.length; i++) {
             ruWordBtn = btn
         }
         if (enWord && ruWord) {
+            console.log(speed);
 
             let wordObj = nabordannux.filter(function (obj) {
                 emoji = Math.floor(Math.random() * weapons.length)
@@ -92,6 +93,9 @@ for (let i = 0; i < wordsBtns.length; i++) {
                 console.log("ЛОХ!!!");
                 h = false
                 speed = speed + 0.01
+                btn.classList.remove("gray")
+                enWordBtn.classList.add("red")
+                ruWordBtn.classList.add("red")
             }
             if (wn == 4) {
                 console.log("wn4");
@@ -115,7 +119,7 @@ for (let i = 0; i < wordsBtns.length; i++) {
     }
 }
 setTimeout(function () {
-    enemy.style.left = '';
+
 
 }, 1000)
 
@@ -194,6 +198,8 @@ pause.onclick = function () {
             timerInterval = setInterval(function () {
                 time = time + 0.1;
                 speed = speed + 0.0001
+                console.log(speed);
+
                 timer.innerHTML = time.toFixed(1);
             }, 100);
             pause.innerHTML = "пауза ⏸️";
@@ -224,6 +230,7 @@ startBtn.onclick = function () {
     clearInterval(timerInterval)
     timerInterval = setInterval(function () {
         time = time + 0.1;
+        speed = speed + 0.0001
         timer.innerHTML = time.toFixed(1);
     }, 100);
 }
@@ -232,41 +239,41 @@ startBtn.onclick = function () {
 
 function refreshGame() {
     words.style.pointerEvents = "auto"
-    
-    
+
+
     if (isMathMode) {
         nabordannux = getMath()
     } else {
-        nabordannux = data  
+        nabordannux = data
     }
-    
-   
+
+
     nabordannux.sort(function () {
         return Math.random() > 0.5 ? 1 : -1
     })
-    
- 
+
+
     fourObj = nabordannux.slice(0, 4)
-    
- 
+
+
     eng = []
     rus = []
     for (let i = 0; i < 4; i++) {
         eng.push(fourObj[i].en)
-       
+
         if (isMathMode) {
             rus.push((fourObj[i].ru))
         } else {
             rus.push(fourObj[i].ru)
         }
     }
-    
- 
+
+
     rus.sort(function () {
         return Math.random() > 0.5 ? 1 : -1
     })
-    
-   
+
+
     for (let i = 0; i < 4; i++) {
         let lBtn = left.children[i]
         let rBtn = right.children[i]
@@ -298,19 +305,21 @@ modeBtn.onclick = function () {
 
     if (isMathMode) {
         modeBtn.innerHTML = "📚 английский"
+        body.style.backgroundImage = 'url("4fc16b97729757ff129c0adaea28865e.jpg")';
     } else {
         modeBtn.innerHTML = "🔢 математика"
+        body.style.backgroundImage = 'url("6743781760.jpg")';
     }
-    
-    refreshGame()  
+
+    refreshGame()
 
     enWord = null
     ruWord = null
     enWordBtn = null
     ruWordBtn = null
     wn = 0
-    
-   
+
+
     let grayBtn = document.getElementsByClassName("gray")[0]
     if (grayBtn) {
         grayBtn.classList.remove("gray")

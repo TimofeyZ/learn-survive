@@ -67,7 +67,9 @@ img {
     flex: 1;
 
 }
-
+#words .red{
+border : 6px solid  rgba(230, 44, 37, 0.97)!important;
+}
 #words .gray {
     border: 6px solid rgb(255, 199, 95) !important;
 }
@@ -111,5 +113,5 @@ border: 15px solid;
 #pause{
     opacity: 0;
 }
-/* сделать красное миганиеЫ
+/* сделать красное свечение
 смена фона */
